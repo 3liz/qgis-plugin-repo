@@ -40,7 +40,7 @@ setup(
         "Intended Audience :: Information Technology",
     ],
     install_requires=["requests"],
-    extra_require=dict(tests=['pytest']),
+    # extra_require=dict(tests=['pytest']),
     python_requires=">={vmaj}.{vmin}".format(
         vmaj=python_min_version[0], vmin=python_min_version[1]
     ),
