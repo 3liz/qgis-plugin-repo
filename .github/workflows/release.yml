@@ -1,0 +1,58 @@
+name: Run tests and release
+
+on:
+  push:
+    tags: "*"
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  PROJECT_FOLDER: "qgis_plugin_repo"
+  PYTHON_VERSION: 3.8
+
+jobs:
+#  tests:
+#    name: "Tests"
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - name: Get source code
+#      uses: actions/checkout@v2
+#
+#    - name: Set up Python
+#      uses: actions/setup-python@v1
+#      with:
+#        python-version: ${{ env.PYTHON_VERSION }}
+#
+#    - name: Install Python requirements
+#      run: python -m pip install -U pip setuptools wheel
+#
+#    - name: Run tests
+#      working-directory: tests
+#      run: python -m unittest
+
+  release:
+    name: "Release on tag 🚀"
+    runs-on: ubuntu-latest
+    needs: [tests]
+
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+
+    steps:
+    - name: Get source code
+      uses: actions/checkout@v2
+
+    - name: Setup
+      run: |
+        VERSION=${GITHUB_REF:-0.0.0}
+        VERSION=${VERSION##*/}
+        sed "s/__VERSION__/${VERSION}/" setup.py > setup.py
+
+    - name: Deploy to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}

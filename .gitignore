@@ -1,0 +1,8 @@
+#IDE
+.idea/
+
+# Python
+__pycache__/
+*.egg-info
+.venv
+venv

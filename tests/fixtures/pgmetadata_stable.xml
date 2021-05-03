@@ -1,0 +1,21 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<plugins>
+    <pyqgis_plugin name="PgMetadata" version="0.6.0">
+        <description><![CDATA[Metadata manager stored in PostgreSQL]]></description>
+        <version>0.6.0</version>
+        <qgis_minimum_version>3.10</qgis_minimum_version>
+        <homepage>https://docs.3liz.org/qgis-pgmetadata-plugin/</homepage>
+        <file_name>pg_metadata.0.6.0.zip</file_name>
+        <icon>resources/icons/icon.png</icon>
+        <author_name>3Liz</author_name>
+        <download_url>https://github.com/3liz/qgis-pgmetadata-plugin/releases/download/0.6.0/pg_metadata.0.6.0.zip</download_url>
+        <uploaded_by>3Liz</uploaded_by>
+        <create_date>2021-02-19</create_date>
+        <update_date>2021-02-19</update_date>
+        <experimental>False</experimental>
+        <deprecated>False</deprecated>
+        <tracker>https://github.com/3liz/qgis-pgmetadata-plugin/issues</tracker>
+        <repository>https://github.com/3liz/qgis-pgmetadata-plugin</repository>
+        <tags>metadata,postgresql,qgis,metadonnees</tags>
+    </pyqgis_plugin>
+</plugins>
