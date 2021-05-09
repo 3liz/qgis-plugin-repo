@@ -67,7 +67,6 @@ jobs:
         ls -al dist
 
     - name: Create release on GitHub
-      id: create_release
       uses: ncipollo/release-action@v1.8.4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
