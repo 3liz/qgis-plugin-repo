@@ -141,6 +141,7 @@ class Merger:
                 self.output_parser.remove(element)
 
             print(f"Adding new version {plugin.name} {plugin.experimental} {plugin.version}")
-            self.output_parser.append(self.plugin_element(self.input_parser, plugin.name, plugin.experimental))
+            self.output_parser.append(
+                self.plugin_element(self.input_parser, plugin.name, plugin.experimental))
 
         self.output_tree.write(self.destination.absolute())

@@ -10,7 +10,6 @@ on:
       - master
 
 env:
-  # PROJECT_FOLDER: "qgis_plugin_repo"
   PYTHON_VERSION: 3.8
 
 jobs:
@@ -80,24 +79,9 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         allowUpdates: true
         artifacts: "dist/*.tar.gz"
-        # tag_name: ${{ github.ref }}
-        # release_name: ${{ github.ref }}
-        # body_path: release.md
 
-#    - name: Deploy to PyPI
-#      uses: pypa/gh-action-pypi-publish@master
-#      with:
-#        user: __token__
-#        password: ${{ secrets.PYPI_API_TOKEN }}
-
-#
-#      - name: Upload Release Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-#          asset_path: ./my-artifact.zip
-#          asset_name: my-artifact.zip
-#          asset_content_type: application/zip
+    - name: Deploy to PyPI
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}

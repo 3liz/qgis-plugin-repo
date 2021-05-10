@@ -1,7 +1,99 @@
-# QGIS-Plugin-Repo-Merge
+# QGIS-Plugin-Repo
+
+[![PyPi version badge](https://badgen.net/pypi/v/qgis-plugin-repo)](https://pypi.org/project/qgis-plugin-repo/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/qgis-plugin-repo)](https://pypi.org/project/qgis-plugin-repo/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/qgis-plugin-repo)](https://pypi.org/project/qgis-plugin-repo/)
+
+## Presentation
 
 Merge some QGIS plugin repository together
 
 ```bash
-qgis-plugin-repo-merge all_plugins.xml https://path/to/plugins_to_add.xml
+qgis-plugin-repo merge output_qgis_plugin_ci.xml all_plugins.xml
+qgis-plugin-repo merge https://path/to/plugins_to_add.xml all_plugins.xml
+```
+
+The file `all_plugins.xml` will be edited, according to the plugin name, plugin 
+version and its experimental flag or not. In an XML file, the plugin can have 
+two versions : one experimental and the other one not.
+
+Additionally, you can read an XML file :
+```bash
+qgis-plugin-repo read https://plugins.qgis.org/plugins/plugins.xml?qgis=3.10
+```
+
+## GitHub Actions
+
+The main puprose of this tool is to run on CI.
+
+In the plugin repository, after [QGIS-Plugin-CI](https://github.com/opengisch/qgis-plugin-ci) :
+```yml
+  - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.TOKEN }}
+        repository: organisation/repository
+        event-type: merge-plugins
+        client-payload: '{"name": "NAME_OF_PLUGIN", "version": "${{ env.RELEASE_VERSION }}", "url": "URL_OF_LATEST.xml"}'
+```
+
+In the main repository with a `docs/plugins.xml` to edit :
+```yaml
+name: 🔀 Plugin repository
+
+on:
+  repository_dispatch:
+    types: [merge-plugins]
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - run: >
+         echo ${{ github.event.client_payload.name }}
+         echo ${{ github.event.client_payload.version }}
+         echo ${{ github.event.client_payload.url }}
+
+      - name: Get source code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: 3.8
+
+      - name: Install qgis-plugin-repo
+        run: pip3 install qgis-plugin-repo
+
+      - name: Merge
+        run: qgis-plugin-repo merge ${{ github.event.client_payload.url }} docs/plugins.xml
+
+      - name: Git identity
+        run: |
+          git config --global user.email "${{ secrets.BOT_MAIL }}"
+          git config --global user.name "${{ secrets.BOT_NAME }}"
+
+      - name: Check for changes
+        run: |
+          if git diff --exit-code; then
+            echo "changes_exist=false" >> $GITHUB_ENV
+          else
+            echo "changes_exist=true" >> $GITHUB_ENV
+          fi
+
+      - name: Commit and push
+        if: env.changes_exist == 'true'
+        run: |
+          git add -u
+          git commit -m "Publish QGIS Plugin ${{ github.event.client_payload.name }} ${{ github.event.client_payload.version }}"
+          git push --force https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git HEAD:versions
+
+```
+
+### Tests
+
+```bash
+python -m unittest
 ```
