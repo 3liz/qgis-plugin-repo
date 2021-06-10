@@ -1,5 +1,6 @@
 # QGIS-Plugin-Repo
 
+[![🧪 Tests](https://github.com/3liz/qgis-plugin-repo/actions/workflows/release.yml/badge.svg)](https://github.com/3liz/qgis-plugin-repo/actions/workflows/release.yml)
 [![PyPi version badge](https://badgen.net/pypi/v/qgis-plugin-repo)](https://pypi.org/project/qgis-plugin-repo/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/qgis-plugin-repo)](https://pypi.org/project/qgis-plugin-repo/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/qgis-plugin-repo)](https://pypi.org/project/qgis-plugin-repo/)
@@ -24,7 +25,7 @@ qgis-plugin-repo read https://plugins.qgis.org/plugins/plugins.xml?qgis=3.10
 
 ## GitHub Actions
 
-The main puprose of this tool is to run on CI.
+The main purpose of this tool is to run on CI.
 
 In the plugin repository, after [QGIS-Plugin-CI](https://github.com/opengisch/qgis-plugin-ci) :
 ```yml
@@ -36,6 +37,9 @@ In the plugin repository, after [QGIS-Plugin-CI](https://github.com/opengisch/qg
         event-type: merge-plugins
         client-payload: '{"name": "NAME_OF_PLUGIN", "version": "${{ env.RELEASE_VERSION }}", "url": "URL_OF_LATEST.xml"}'
 ```
+
+**Note** that QGIS-Plugin-CI `package` or `release` must be been called with `--create-plugin-repo` because this
+tool will use the XML file generated.
 
 In the main repository with a `docs/plugins.xml` to edit :
 ```yaml
@@ -58,9 +62,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          token: ${{ secrets.BOT_HUB_TOKEN }}  # Important to launch CI on a commit from a bot
 
       - name: Set up Python 3.8
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.8
 
@@ -70,30 +75,18 @@ jobs:
       - name: Merge
         run: qgis-plugin-repo merge ${{ github.event.client_payload.url }} docs/plugins.xml
 
-      - name: Git identity
-        run: |
-          git config --global user.email "${{ secrets.BOT_MAIL }}"
-          git config --global user.name "${{ secrets.BOT_NAME }}"
-
-      - name: Check for changes
-        run: |
-          if git diff --exit-code; then
-            echo "changes_exist=false" >> $GITHUB_ENV
-          else
-            echo "changes_exist=true" >> $GITHUB_ENV
-          fi
-
-      - name: Commit and push
-        if: env.changes_exist == 'true'
-        run: |
-          git add -u
-          git commit -m "Publish QGIS Plugin ${{ github.event.client_payload.name }} ${{ github.event.client_payload.version }}"
-          git push --force https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git HEAD:versions
-
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Publish QGIS Plugin ${{ github.event.client_payload.name }} ${{ github.event.client_payload.version }}"
+          commit_user_name: ${{ secrets.BOT_NAME }}
+          commit_user_email: ${{ secrets.BOT_MAIL }}
+          commit_author: ${{ secrets.BOT_NAME }}
 ```
 
 ### Tests
 
 ```bash
+cd tests
 python -m unittest
 ```
