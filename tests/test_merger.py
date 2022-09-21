@@ -12,12 +12,23 @@ __email__ = 'info@3liz.org'
 class TestMerger(unittest.TestCase):
 
     def setUp(self) -> None:
-
+        """ Before each test. """
         shutil.copy(Path("fixtures/plugins.xml"), Path("fixtures/plugins_tmp.xml"))
+        shutil.copy(Path("fixtures/plugins-3.4.xml"), Path("fixtures/plugins_tmp-3.4.xml"))
+        shutil.copy(Path("fixtures/plugins-3.10.xml"), Path("fixtures/plugins_tmp-3.10.xml"))
+        shutil.copy(Path("fixtures/plugins-3.16.xml"), Path("fixtures/plugins_tmp-3.16.xml"))
+        shutil.copy(Path("fixtures/plugins-3.22.xml"), Path("fixtures/plugins_tmp-3.22.xml"))
+        shutil.copy(Path("fixtures/plugins-3.28.xml"), Path("fixtures/plugins_tmp-3.28.xml"))
 
     def tearDown(self) -> None:
+        """ After each test. """
         Path("plugins.xml").unlink(missing_ok=True)
         Path("fixtures/plugins_tmp.xml").unlink(missing_ok=True)
+        Path("fixtures/plugins_tmp-3.4.xml").unlink(missing_ok=True)
+        Path("fixtures/plugins_tmp-3.10.xml").unlink(missing_ok=True)
+        Path("fixtures/plugins_tmp-3.16.xml").unlink(missing_ok=True)
+        Path("fixtures/plugins_tmp-3.22.xml").unlink(missing_ok=True)
+        Path("fixtures/plugins_tmp-3.28.xml").unlink(missing_ok=True)
 
     def test_empty_repo(self):
         """ Test to create a new repository. """

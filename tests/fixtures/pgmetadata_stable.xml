@@ -4,6 +4,7 @@
         <description><![CDATA[Metadata manager stored in PostgreSQL]]></description>
         <version>0.6.0</version>
         <qgis_minimum_version>3.10</qgis_minimum_version>
+        <qgis_maximum_version>3.22</qgis_maximum_version>
         <homepage>https://docs.3liz.org/qgis-pgmetadata-plugin/</homepage>
         <file_name>pg_metadata.0.6.0.zip</file_name>
         <icon>resources/icons/icon.png</icon>
