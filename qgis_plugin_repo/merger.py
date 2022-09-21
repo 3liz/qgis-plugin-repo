@@ -33,8 +33,12 @@ class Merger:
 
     def __init__(self, destination: Union[Path, None], input_uri: Union[Path, str, None]):
         """ Constructor. """
+        # Usually a path, it can be None if we want to read only
         self.destination = destination
+        # Usually a path as a string, or a URL
         self.input_uri = input_uri
+
+        # Internal objects
         self.input_parser = None
         self.output_tree = None
         self.output_parser = None
@@ -54,6 +58,8 @@ class Merger:
         if self.input_is_url():
             self.input_parser = ET.fromstring(requests.get(self.input_uri).content)
         else:
+            if not isinstance(self.input_uri, Path):
+                self.input_uri = Path(self.input_uri)
             tree = ET.parse(self.input_uri.absolute())
             self.input_parser = tree.getroot()
 
@@ -74,6 +80,10 @@ class Merger:
     def input_is_url(self) -> bool:
         """ Check if the input is a URL. """
         if isinstance(self.input_uri, Path):
+            return False
+
+        path = Path(self.input_uri)
+        if path.exists():
             return False
 
         # noinspection PyBroadException
@@ -103,9 +113,9 @@ class Merger:
         return plugins_list
 
     @staticmethod
-    def plugin_element(parser, name: str, experimental: bool) -> ET.Element:
+    def plugin_element(parser: ET.Element, name: str, experimental: bool) -> [ET.Element, int]:
         """ Return the XML element for a given plugin name and its experimental flag. """
-        for plugin in parser:
+        for i, plugin in enumerate(parser):
             if plugin.attrib['name'] != name:
                 continue
 
@@ -116,7 +126,9 @@ class Merger:
                     if flag != experimental:
                         continue
 
-                    return plugin
+                    return plugin, i
+
+        return None, None
 
     @staticmethod
     def diff_plugins(plugins_input, plugins_output) -> list:
@@ -145,14 +157,19 @@ class Merger:
             print("No update is necessary")
 
         for plugin in diff:
-            # Remove old version
-            element = self.plugin_element(self.output_parser, plugin.name, plugin.experimental)
+            element, index = self.plugin_element(self.output_parser, plugin.name, plugin.experimental)
             if element:
-                print(f"Removing previous {plugin.name} {plugin.experimental} {element.attrib['version']}")
-                self.output_parser.remove(element)
+                print(f"Updating previous {plugin.name} {plugin.experimental} {element.attrib['version']}")
+                element.__setstate__(
+                    self.plugin_element(self.input_parser, plugin.name, plugin.experimental)[0].__getstate__())
+            else:
+                print(f"Adding new version {plugin.name} {plugin.experimental} {plugin.version}")
+                self.output_parser.append(
+                    self.plugin_element(self.input_parser, plugin.name, plugin.experimental)[0])
 
-            print(f"Adding new version {plugin.name} {plugin.experimental} {plugin.version}")
-            self.output_parser.append(
-                self.plugin_element(self.input_parser, plugin.name, plugin.experimental))
+        # tree = ET.ElementTree(self.output_tree)
+        ET.indent(self.output_tree, space="\t", level=0)
+        self.output_tree.write(self.destination.absolute(), encoding="utf-8")
 
-        self.output_tree.write(self.destination.absolute())
+        with open(self.destination, "a", encoding='utf8') as f:
+            f.write("\n")

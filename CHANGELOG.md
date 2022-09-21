@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Enable Python 3.10
+* Keep same order of plugins when inserting an updated plugin in the XML
 
 ## 0.3.0 - 2021-06-10
 
