@@ -1,10 +1,12 @@
+import sys
+import xml.etree.ElementTree as ET
+
 from collections import namedtuple
 from pathlib import Path
 from typing import Union
 from urllib.parse import urlparse
-import requests
-import xml.etree.ElementTree as ET
 
+import requests
 
 __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
@@ -165,14 +167,15 @@ class Merger:
             if element:
                 print(f"Updating previous {plugin.name} {plugin.experimental} {element.attrib['version']}")
                 element.__setstate__(
-                    self.plugin_element(self.input_parser, plugin.name, plugin.experimental)[0].__getstate__())
+                    self.plugin_element(
+                        self.input_parser, plugin.name, plugin.experimental)[0].__getstate__())
             else:
                 print(f"Adding new version {plugin.name} {plugin.experimental} {plugin.version}")
                 self.output_parser.append(
                     self.plugin_element(self.input_parser, plugin.name, plugin.experimental)[0])
 
-        # tree = ET.ElementTree(self.output_tree)
-        ET.indent(self.output_tree, space="\t", level=0)
+        if sys.version_info >= (3, 9):
+            ET.indent(self.output_tree, space="\t", level=0)
         self.output_tree.write(self.destination.absolute(), encoding="utf-8")
 
         with open(self.destination, "a", encoding='utf8') as f:

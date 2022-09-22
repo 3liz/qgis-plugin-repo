@@ -3,14 +3,15 @@ __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
 
 import re
-from pathlib import Path
-from typing import Union
 import xml.etree.ElementTree as ET
+
+from pathlib import Path
+from typing import List, Tuple, Union
 
 
 class Dispatcher:
 
-    def __init__(self, input_uri: Union[Path, str], outputs_uri: list[str]):
+    def __init__(self, input_uri: Union[Path, str], outputs_uri: List[str]):
         """ Constructor. """
         if isinstance(input_uri, str):
             input_uri = Path(input_uri)
@@ -20,7 +21,7 @@ class Dispatcher:
 
         self.outputs_uri = [Path(f) for f in outputs_uri]
 
-    def xml_files_for_plugin(self) -> list[Path]:
+    def xml_files_for_plugin(self) -> List[Path]:
         """ Return the list of XML to edit for the given plugin. """
         qgis_min, qgis_max = self.versions_for_plugin()
         qgis_min = qgis_min.split('.')
@@ -30,7 +31,7 @@ class Dispatcher:
 
         qgis_range = range(int(qgis_min[1]), int(qgis_max[1]) + 1)
         qgis_range = [v for v in qgis_range if v % 2 == 0]
-        qgis_range = [f'{qgis_min[0]}\.{v}' for v in qgis_range]
+        qgis_range = [fr'{qgis_min[0]}\.{v}' for v in qgis_range]
         qgis_range = '|'.join(qgis_range)
         tmp = []
         for output_uri in self.outputs_uri:
@@ -38,7 +39,7 @@ class Dispatcher:
                 tmp.append(output_uri)
         return tmp
 
-    def versions_for_plugin(self) -> tuple[str, str]:
+    def versions_for_plugin(self) -> Tuple[str, str]:
         """ Return the minimum and maximum QGIS version if found in the XML.
 
         Default values are 3.0 and 3.99.
