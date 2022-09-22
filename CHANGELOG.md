@@ -4,6 +4,7 @@
 
 * Enable Python 3.10
 * Keep same order of plugins when inserting an updated plugin in the XML
+* Enable dispatching a plugin according to its `metadata.txt` in many XML repositories
 
 ## 0.3.0 - 2021-06-10
 

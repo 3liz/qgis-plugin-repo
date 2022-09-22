@@ -1,7 +1,9 @@
 import shutil
 import unittest
+
 from pathlib import Path
 
+from qgis_plugin_repo.dispatcher import Dispatcher
 from qgis_plugin_repo.merger import Merger, Plugin
 
 __copyright__ = 'Copyright 2021, 3Liz'
@@ -143,3 +145,66 @@ class TestMerger(unittest.TestCase):
             "https://github.com/3liz/qgis-pgmetadata-plugin/releases/download/0.2.2/plugins.xml"
         )
         self.assertTrue(merger.input_is_url())
+
+    def test_count(self):
+        """ Test to count plugins in an XML file. """
+        merger = Merger(None, Path("fixtures/pgmetadata_stable.xml"))
+        merger.xml_input_parser()
+        self.assertEqual(1, merger.count())
+
+        merger = Merger(None, Path("fixtures/pgmetadata_experimental.xml"))
+        merger.xml_input_parser()
+        self.assertEqual(1, merger.count())
+
+        merger = Merger(None, Path("fixtures/plugins.xml"))
+        merger.xml_input_parser()
+        self.assertEqual(3, merger.count())
+
+    def test_dispatcher_plugin_stable(self):
+        """ Test the dispatcher with a stable version. """
+        dispatcher = Dispatcher(
+            Path("fixtures/pgmetadata_stable.xml"),
+            [
+                "fixtures/plugins_tmp-3.4.xml",
+                "fixtures/plugins_tmp-3.10.xml",
+                "fixtures/plugins_tmp-3.16.xml",
+                "fixtures/plugins_tmp-3.22.xml",
+                "fixtures/plugins_tmp-3.28.xml",
+            ]
+        )
+        qgis_min, qgis_max = dispatcher.versions_for_plugin()
+        self.assertEqual("3.10", qgis_min)
+        self.assertEqual("3.22", qgis_max)
+        self.assertListEqual(
+            [
+                Path('fixtures/plugins_tmp-3.10.xml'),
+                Path('fixtures/plugins_tmp-3.16.xml'),
+                Path('fixtures/plugins_tmp-3.22.xml'),
+            ],
+            dispatcher.xml_files_for_plugin()
+        )
+
+    def test_dispatcher_plugin_dev(self):
+        """ Test the dispatcher with a dev version. """
+        dispatcher = Dispatcher(
+            Path("fixtures/pgmetadata_experimental.xml"),
+            [
+                "fixtures/plugins_tmp-3.4.xml",
+                "fixtures/plugins_tmp-3.10.xml",
+                "fixtures/plugins_tmp-3.16.xml",
+                "fixtures/plugins_tmp-3.22.xml",
+                "fixtures/plugins_tmp-3.28.xml",
+            ]
+        )
+        qgis_min, qgis_max = dispatcher.versions_for_plugin()
+        self.assertEqual("3.10", qgis_min)
+        self.assertEqual("3.99", qgis_max)
+        self.assertListEqual(
+            [
+                Path('fixtures/plugins_tmp-3.10.xml'),
+                Path('fixtures/plugins_tmp-3.16.xml'),
+                Path('fixtures/plugins_tmp-3.22.xml'),
+                Path('fixtures/plugins_tmp-3.28.xml'),
+            ],
+            dispatcher.xml_files_for_plugin()
+        )

@@ -140,6 +140,10 @@ class Merger:
 
         return new
 
+    def count(self) -> int:
+        """ Count the number of plugins in the XML. """
+        return len(self.plugins(self.input_parser))
+
     def merge(self):
         """ Make the merge. """
         if not self.exists():

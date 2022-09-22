@@ -2,6 +2,8 @@
 
 import argparse
 
+from qgis_plugin_repo.__about__ import __version__
+from qgis_plugin_repo.dispatcher import Dispatcher
 from qgis_plugin_repo.merger import Merger
 
 __copyright__ = 'Copyright 2021, 3Liz'
@@ -14,7 +16,10 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
-        "-v", "--version", help="Print the version and exit", action="store_true"
+        "-v",
+        "--version",
+        action="version",
+        version=__version__,
     )
 
     subparsers = parser.add_subparsers(
@@ -26,20 +31,9 @@ def main():
 
     merge = subparsers.add_parser("merge", help="Merge two repository file")
     merge.add_argument("input_xml", help="The XML to append")
-    merge.add_argument("output_xml", help="The XML to edit")
+    merge.add_argument("output_xml", help="The XML to edit", nargs='*')
 
     args = parser.parse_args()
-
-    # print the version and exit
-    if args.version:
-        import pkg_resources
-
-        print(
-            "qgis-plugin-manager version: {}".format(
-                pkg_resources.get_distribution("qgis-plugin-manager").version
-            )
-        )
-        parser.exit()
 
     # if no command is passed, print the help and exit
     if not args.command:
@@ -59,10 +53,32 @@ def main():
                 print(f"{plugin.name} {plugin.version}")
 
     elif args.command == "merge":
-        merger = Merger(args.output_xml, args.input_xml)
-        merger.xml_input_parser()
-        merger.xml_output_parser()
-        merger.merge()
+        if len(args.output_xml) >= 1:
+            print("More than one XML file detected for the output. All these files will be checked for QGIS versions :")
+            print(', '.join([f for f in args.output_xml]))
+            merger = Merger(None, args.input_xml)
+            merger.xml_input_parser()
+            if merger.count() >= 2:
+                print("Not possible to merge an XML file having many plugin for inputs when using [VERSION]")
+                exit(1)
+
+            dispatcher = Dispatcher(args.input_xml, args.output_xml)
+            output_files = dispatcher.xml_files_for_plugin()
+            for output_file in output_files:
+                print(f"Editing {output_file.name}")
+                merger = Merger(output_file, args.input_xml)
+                merger.xml_input_parser()
+                merger.xml_output_parser()
+                merger.merge()
+        else:
+            print(
+                "A single XML file detected for the output. This file is going to be edited whatever it's has a "
+                "QGIS version."
+            )
+            merger = Merger(args.output_xml, args.input_xml)
+            merger.xml_input_parser()
+            merger.xml_output_parser()
+            merger.merge()
 
     return exit_val
 

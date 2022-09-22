@@ -9,6 +9,8 @@
 
 Merge some QGIS plugin repository together
 
+### Single QGIS repository
+
 ```bash
 qgis-plugin-repo merge output_qgis_plugin_ci.xml all_plugins.xml
 qgis-plugin-repo merge https://path/to/plugins_to_add.xml all_plugins.xml
@@ -18,7 +20,34 @@ The file `all_plugins.xml` will be edited, according to the plugin name, plugin
 version and its experimental flag or not. In an XML file, the plugin can have 
 two versions : one experimental and the other one not.
 
-Additionally, you can read an XML file :
+### Many QGIS repositories
+
+You can also have multiple XML files like :
+
+```bash
+qgis/
+├── plugins-3.4.xml
+├── plugins-3.10.xml
+├── plugins-3.16.xml
+├── plugins-3.22.xml
+└── plugins-3-28.xml
+```
+
+Then, it's possible to call `qgis-plugin-repo` to dispatch an XML plugin in matching QGIS XML files :
+
+```commandline
+qgis-plugin-repo merge output_qgis_plugin_ci.xml plugins-*.xml
+```
+
+According to QGIS minimum/maximum versions hardcoded in the XML (and therefore in the metadata.txt), only corresponding
+QGIS XML files will be edited.
+
+For now, only plugins between **3.0** and **3.99** and without a patch QGIS version number are supported.
+
+### Read a QGIS repository
+
+You can read an XML file :
+
 ```bash
 qgis-plugin-repo read https://plugins.qgis.org/plugins/plugins.xml?qgis=3.10
 ```
