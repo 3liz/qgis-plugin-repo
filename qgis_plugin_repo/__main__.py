@@ -53,7 +53,7 @@ def main():
                 print(f"{plugin.name} {plugin.version}")
 
     elif args.command == "merge":
-        if len(args.output_xml) >= 1:
+        if len(args.output_xml) >= 2:
             print(
                 "More than one XML file detected for the output. "
                 "All these files will be checked for QGIS versions :")
@@ -77,7 +77,7 @@ def main():
                 "A single XML file detected for the output."
                 "This file is going to be edited whatever it's has a QGIS version."
             )
-            merger = Merger(args.output_xml, args.input_xml)
+            merger = Merger(args.output_xml[0], args.input_xml)
             merger.xml_input_parser()
             merger.xml_output_parser()
             merger.merge()

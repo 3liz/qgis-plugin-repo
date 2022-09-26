@@ -21,6 +21,8 @@ class Dispatcher:
         if is_url(input_uri):
             self.input_parser = ET.fromstring(requests.get(self.input_uri).content)
         else:
+            if isinstance(self.input_uri, str):
+                self.input_uri = Path(self.input_uri)
             self.input_parser = ET.parse(self.input_uri.absolute()).getroot()
 
         self.outputs_uri = [Path(f) for f in outputs_uri]
