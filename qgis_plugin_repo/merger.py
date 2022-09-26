@@ -8,6 +8,8 @@ from urllib.parse import urlparse
 
 import requests
 
+from qgis_plugin_repo.tools import is_url
+
 __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
@@ -57,7 +59,7 @@ class Merger:
 
     def xml_input_parser(self) -> ET.Element:
         """ Returns the XML parser for the input file. """
-        if self.input_is_url():
+        if is_url(self.input_uri):
             self.input_parser = ET.fromstring(requests.get(self.input_uri).content)
         else:
             if not isinstance(self.input_uri, Path):
@@ -75,7 +77,12 @@ class Merger:
         if not self.exists():
             self.init()
 
-        self.output_tree = ET.parse(self.destination.absolute())
+        try:
+            self.output_tree = ET.parse(self.destination.absolute())
+        except ET.ParseError:
+            self.init()
+            self.output_tree = ET.parse(self.destination.absolute())
+
         self.output_parser = self.output_tree.getroot()
         return self.output_parser
 

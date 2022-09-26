@@ -8,16 +8,20 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import List, Tuple, Union
 
+import requests
+
+from qgis_plugin_repo.tools import is_url
+
 
 class Dispatcher:
 
     def __init__(self, input_uri: Union[Path, str], outputs_uri: List[str]):
         """ Constructor. """
-        if isinstance(input_uri, str):
-            input_uri = Path(input_uri)
-
         self.input_uri = input_uri
-        self.input_parser = ET.parse(self.input_uri.absolute()).getroot()
+        if is_url:
+            self.input_parser = ET.fromstring(requests.get(self.input_uri).content)
+        else:
+            self.input_parser = ET.parse(self.input_uri.absolute()).getroot()
 
         self.outputs_uri = [Path(f) for f in outputs_uri]
 
