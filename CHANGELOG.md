@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.4.1 - 2022-09-26
+
+* Remove some print statements
+* Fix if the destination is an empty file
+
 ## 0.4.0 - 2022-09-22
 
 * Enable Python 3.10

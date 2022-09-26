@@ -5,6 +5,7 @@ from pathlib import Path
 
 from qgis_plugin_repo.dispatcher import Dispatcher
 from qgis_plugin_repo.merger import Merger, Plugin
+from qgis_plugin_repo.tools import is_url
 
 __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
@@ -43,7 +44,7 @@ class TestMerger(unittest.TestCase):
         merger.xml_input_parser()
         input_plugins = merger.plugins(merger.input_parser)
         self.assertEqual(len(input_plugins), 1)
-        self.assertFalse(merger.input_is_url())
+        self.assertFalse(is_url(merger.input_uri))
 
         merger.xml_output_parser()
         output_plugins = []
@@ -66,7 +67,7 @@ class TestMerger(unittest.TestCase):
         merger.xml_input_parser()
         input_plugins = merger.plugins(merger.input_parser)
         self.assertEqual(len(input_plugins), 1)
-        self.assertFalse(merger.input_is_url())
+        self.assertFalse(is_url(merger.input_uri))
 
         merger.xml_output_parser()
         output_plugins = [
@@ -100,7 +101,7 @@ class TestMerger(unittest.TestCase):
         merger.xml_input_parser()
         input_plugins = merger.plugins(merger.input_parser)
         self.assertEqual(len(input_plugins), 1)
-        self.assertFalse(merger.input_is_url())
+        self.assertFalse(is_url(merger.input_uri))
 
         merger.xml_output_parser()
         output_plugins = [
@@ -144,7 +145,7 @@ class TestMerger(unittest.TestCase):
             Path("fixtures/plugins.xml"),
             "https://github.com/3liz/qgis-pgmetadata-plugin/releases/download/0.2.2/plugins.xml"
         )
-        self.assertTrue(merger.input_is_url())
+        self.assertTrue(is_url(merger.input_uri))
 
     def test_count(self):
         """ Test to count plugins in an XML file. """
@@ -165,11 +166,11 @@ class TestMerger(unittest.TestCase):
         dispatcher = Dispatcher(
             Path("fixtures/pgmetadata_stable.xml"),
             [
-                "fixtures/plugins_tmp-3.4.xml",
-                "fixtures/plugins_tmp-3.10.xml",
-                "fixtures/plugins_tmp-3.16.xml",
-                "fixtures/plugins_tmp-3.22.xml",
-                "fixtures/plugins_tmp-3.28.xml",
+                Path("fixtures/plugins_tmp-3.4.xml"),
+                Path("fixtures/plugins_tmp-3.10.xml"),
+                Path("fixtures/plugins_tmp-3.16.xml"),
+                Path("fixtures/plugins_tmp-3.22.xml"),
+                Path("fixtures/plugins_tmp-3.28.xml"),
             ]
         )
         qgis_min, qgis_max = dispatcher.versions_for_plugin()
@@ -189,11 +190,11 @@ class TestMerger(unittest.TestCase):
         dispatcher = Dispatcher(
             Path("fixtures/pgmetadata_experimental.xml"),
             [
-                "fixtures/plugins_tmp-3.4.xml",
-                "fixtures/plugins_tmp-3.10.xml",
-                "fixtures/plugins_tmp-3.16.xml",
-                "fixtures/plugins_tmp-3.22.xml",
-                "fixtures/plugins_tmp-3.28.xml",
+                Path("fixtures/plugins_tmp-3.4.xml"),
+                Path("fixtures/plugins_tmp-3.10.xml"),
+                Path("fixtures/plugins_tmp-3.16.xml"),
+                Path("fixtures/plugins_tmp-3.22.xml"),
+                Path("fixtures/plugins_tmp-3.28.xml"),
             ]
         )
         qgis_min, qgis_max = dispatcher.versions_for_plugin()

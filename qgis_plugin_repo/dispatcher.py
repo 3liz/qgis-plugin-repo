@@ -15,10 +15,10 @@ from qgis_plugin_repo.tools import is_url
 
 class Dispatcher:
 
-    def __init__(self, input_uri: Union[Path, str], outputs_uri: List[str]):
+    def __init__(self, input_uri: Union[Path, str], outputs_uri: List[Union[Path, str]]):
         """ Constructor. """
         self.input_uri = input_uri
-        if is_url:
+        if is_url(input_uri):
             self.input_parser = ET.fromstring(requests.get(self.input_uri).content)
         else:
             self.input_parser = ET.parse(self.input_uri.absolute()).getroot()

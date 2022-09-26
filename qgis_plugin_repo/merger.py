@@ -86,22 +86,6 @@ class Merger:
         self.output_parser = self.output_tree.getroot()
         return self.output_parser
 
-    def input_is_url(self) -> bool:
-        """ Check if the input is a URL. """
-        if isinstance(self.input_uri, Path):
-            return False
-
-        path = Path(self.input_uri)
-        if path.exists():
-            return False
-
-        # noinspection PyBroadException
-        try:
-            urlparse(self.input_uri)
-            return True
-        except Exception:
-            return False
-
     @staticmethod
     def plugins(parser) -> list:
         """ Return the plugins in the XML file. """
