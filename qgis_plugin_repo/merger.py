@@ -34,7 +34,12 @@ class Merger:
         # Usually a path as a string (filepath or remote URL)
         if is_url(input_uri):
             self.input_uri = input_uri
-            self.input_parser = ET.fromstring(requests.get(self.input_uri).content)
+            try:
+                remote = requests.get(self.input_uri)
+            except requests.exceptions.MissingSchema:
+                print(f"The input {self.input_uri} is neither a valid file nor a valid URL.")
+                exit(2)
+            self.input_parser = ET.fromstring(remote.content)
         else:
             self.input_uri = Path(input_uri)
             self.input_parser = ET.parse(self.input_uri.absolute()).getroot()
@@ -49,12 +54,16 @@ class Merger:
             if not self.destination_uri.exists():
                 self.init()
 
-            self.output_tree = ET.parse(self.destination_uri.absolute())
+            try:
+                self.output_tree = ET.parse(self.destination_uri.absolute())
+            except ET.ParseError:
+                print(f"Invalid XML file content {self.destination_uri.absolute()}")
+                exit(1)
             self.output_parser = self.output_tree.getroot()
 
     def init(self) -> None:
         """ Init the XML files with an empty catalog. """
-        print(f"Creating source {self.destination_uri.absolute()}")
+        print(f"Creating source {self.destination_uri.absolute()} because the file did not exist.")
         with open(self.destination_uri, 'w', encoding='utf8') as f:
             f.write(self.xml_template())
 
