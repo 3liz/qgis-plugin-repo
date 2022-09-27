@@ -35,18 +35,17 @@ class TestMerger(unittest.TestCase):
 
     def test_empty_repo(self):
         """ Test to create a new repository. """
-        merger = Merger(Path("plugins.xml"), Path("fixtures/pgmetadata_stable.xml"))
+        merger = Merger(
+            str(Path("fixtures/pgmetadata_stable.xml")),
+            str(Path("plugins.xml"))
+        )
 
-        self.assertFalse(merger.exists())
-        merger.init()
-        self.assertTrue(merger.exists())
+        self.assertTrue(merger.destination_uri.exists())
 
-        merger.xml_input_parser()
         input_plugins = merger.plugins(merger.input_parser)
         self.assertEqual(len(input_plugins), 1)
         self.assertFalse(is_url(merger.input_uri))
 
-        merger.xml_output_parser()
         output_plugins = []
         self.assertListEqual(output_plugins, merger.plugins(merger.output_parser))
 
@@ -60,16 +59,17 @@ class TestMerger(unittest.TestCase):
 
     def test_existing_repo_stable(self):
         """ Test to read an existing repository with stable. """
-        merger = Merger(Path("fixtures/plugins_tmp.xml"), Path("fixtures/pgmetadata_stable.xml"))
+        merger = Merger(
+            str(Path("fixtures/pgmetadata_stable.xml")),
+            str(Path("fixtures/plugins_tmp.xml"))
+        )
 
-        self.assertTrue(merger.exists())
+        self.assertTrue(merger.destination_uri.exists())
 
-        merger.xml_input_parser()
         input_plugins = merger.plugins(merger.input_parser)
         self.assertEqual(len(input_plugins), 1)
         self.assertFalse(is_url(merger.input_uri))
 
-        merger.xml_output_parser()
         output_plugins = [
             Plugin(name='PgMetadata', experimental=True, version='0.4.0'),
             Plugin(name='PgMetadata', experimental=False, version='0.5.0'),
@@ -94,16 +94,17 @@ class TestMerger(unittest.TestCase):
 
     def test_existing_repo_experimental(self):
         """ Test to read an existing repository with experimental. """
-        merger = Merger(Path("fixtures/plugins_tmp.xml"), Path("fixtures/pgmetadata_experimental.xml"))
+        merger = Merger(
+            str(Path("fixtures/pgmetadata_experimental.xml")),
+            str(Path("fixtures/plugins_tmp.xml"))
+        )
 
-        self.assertTrue(merger.exists())
+        self.assertTrue(merger.destination_uri.exists())
 
-        merger.xml_input_parser()
         input_plugins = merger.plugins(merger.input_parser)
         self.assertEqual(len(input_plugins), 1)
         self.assertFalse(is_url(merger.input_uri))
 
-        merger.xml_output_parser()
         output_plugins = [
             Plugin(name='PgMetadata', experimental=True, version='0.4.0'),
             Plugin(name='PgMetadata', experimental=False, version='0.5.0'),
@@ -128,8 +129,7 @@ class TestMerger(unittest.TestCase):
 
     def test_read(self):
         """ Test to read only. """
-        merger = Merger(None, Path("fixtures/plugins_tmp.xml"))
-        merger.xml_input_parser()
+        merger = Merger(str(Path("fixtures/plugins_tmp.xml")))
         output_plugins = [
             Plugin(name='PgMetadata', experimental=True, version='0.4.0'),
             Plugin(name='PgMetadata', experimental=False, version='0.5.0'),
@@ -142,35 +142,32 @@ class TestMerger(unittest.TestCase):
     def test_url(self):
         """ Test input as URL. """
         merger = Merger(
-            Path("fixtures/plugins.xml"),
-            "https://github.com/3liz/qgis-pgmetadata-plugin/releases/download/0.2.2/plugins.xml"
+            "https://github.com/3liz/qgis-pgmetadata-plugin/releases/download/0.2.2/plugins.xml",
+            str(Path("fixtures/plugins.xml")),
         )
         self.assertTrue(is_url(merger.input_uri))
 
     def test_count(self):
         """ Test to count plugins in an XML file. """
-        merger = Merger(None, Path("fixtures/pgmetadata_stable.xml"))
-        merger.xml_input_parser()
+        merger = Merger(str(Path("fixtures/pgmetadata_stable.xml")))
         self.assertEqual(1, merger.count())
 
-        merger = Merger(None, Path("fixtures/pgmetadata_experimental.xml"))
-        merger.xml_input_parser()
+        merger = Merger(str(Path("fixtures/pgmetadata_experimental.xml")))
         self.assertEqual(1, merger.count())
 
-        merger = Merger(None, Path("fixtures/plugins.xml"))
-        merger.xml_input_parser()
+        merger = Merger(str(Path("fixtures/plugins.xml")))
         self.assertEqual(3, merger.count())
 
     def test_dispatcher_plugin_stable(self):
         """ Test the dispatcher with a stable version. """
         dispatcher = Dispatcher(
-            Path("fixtures/pgmetadata_stable.xml"),
+            str(Path("fixtures/pgmetadata_stable.xml")),
             [
-                Path("fixtures/plugins_tmp-3.4.xml"),
-                Path("fixtures/plugins_tmp-3.10.xml"),
-                Path("fixtures/plugins_tmp-3.16.xml"),
-                Path("fixtures/plugins_tmp-3.22.xml"),
-                Path("fixtures/plugins_tmp-3.28.xml"),
+                str(Path("fixtures/plugins_tmp-3.4.xml")),
+                str(Path("fixtures/plugins_tmp-3.10.xml")),
+                str(Path("fixtures/plugins_tmp-3.16.xml")),
+                str(Path("fixtures/plugins_tmp-3.22.xml")),
+                str(Path("fixtures/plugins_tmp-3.28.xml")),
             ]
         )
         qgis_min, qgis_max = dispatcher.versions_for_plugin()
@@ -188,13 +185,13 @@ class TestMerger(unittest.TestCase):
     def test_dispatcher_plugin_dev(self):
         """ Test the dispatcher with a dev version. """
         dispatcher = Dispatcher(
-            Path("fixtures/pgmetadata_experimental.xml"),
+            str(Path("fixtures/pgmetadata_experimental.xml")),
             [
-                Path("fixtures/plugins_tmp-3.4.xml"),
-                Path("fixtures/plugins_tmp-3.10.xml"),
-                Path("fixtures/plugins_tmp-3.16.xml"),
-                Path("fixtures/plugins_tmp-3.22.xml"),
-                Path("fixtures/plugins_tmp-3.28.xml"),
+                str(Path("fixtures/plugins_tmp-3.4.xml")),
+                str(Path("fixtures/plugins_tmp-3.10.xml")),
+                str(Path("fixtures/plugins_tmp-3.16.xml")),
+                str(Path("fixtures/plugins_tmp-3.22.xml")),
+                str(Path("fixtures/plugins_tmp-3.28.xml")),
             ]
         )
         qgis_min, qgis_max = dispatcher.versions_for_plugin()

@@ -3,8 +3,7 @@ import xml.etree.ElementTree as ET
 
 from collections import namedtuple
 from pathlib import Path
-from typing import Union
-from urllib.parse import urlparse
+from typing import Optional
 
 import requests
 
@@ -13,11 +12,6 @@ from qgis_plugin_repo.tools import is_url
 __copyright__ = 'Copyright 2021, 3Liz'
 __license__ = 'GPL version 3'
 __email__ = 'info@3liz.org'
-
-
-class FileDoesNotExist(Exception):
-    pass
-
 
 Plugin = namedtuple('Plugin', ['name', 'experimental', 'version'])
 
@@ -35,56 +29,34 @@ class Merger:
             "</plugins>\n"
         )
 
-    def __init__(self, destination: Union[Path, None], input_uri: Union[Path, str, None]):
+    def __init__(self, input_uri: str, destination_uri: Optional[str] = None):
         """ Constructor. """
+        # Usually a path as a string (filepath or remote URL)
+        if is_url(input_uri):
+            self.input_uri = input_uri
+            self.input_parser = ET.fromstring(requests.get(self.input_uri).content)
+        else:
+            self.input_uri = Path(input_uri)
+            self.input_parser = ET.parse(self.input_uri.absolute()).getroot()
+
         # Usually a path, it can be None if we want to read only
-        self.destination = destination
-        # Usually a path as a string, or a URL
-        self.input_uri = input_uri
-
-        # Internal objects
-        self.input_parser = None
-        self.output_tree = None
+        self.destination_uri = None
         self.output_parser = None
+        self.output_tree = None
+        if destination_uri:
+            self.destination_uri = Path(destination_uri)
 
-    def exists(self) -> bool:
-        """ If the destination files exists. """
-        return self.destination.exists()
+            if not self.destination_uri.exists():
+                self.init()
+
+            self.output_tree = ET.parse(self.destination_uri.absolute())
+            self.output_parser = self.output_tree.getroot()
 
     def init(self) -> None:
         """ Init the XML files with an empty catalog. """
-        print(f"Creating source {self.destination.absolute()}")
-        with open(self.destination, 'w', encoding='utf8') as f:
+        print(f"Creating source {self.destination_uri.absolute()}")
+        with open(self.destination_uri, 'w', encoding='utf8') as f:
             f.write(self.xml_template())
-
-    def xml_input_parser(self) -> ET.Element:
-        """ Returns the XML parser for the input file. """
-        if is_url(self.input_uri):
-            self.input_parser = ET.fromstring(requests.get(self.input_uri).content)
-        else:
-            if not isinstance(self.input_uri, Path):
-                self.input_uri = Path(self.input_uri)
-            tree = ET.parse(self.input_uri.absolute())
-            self.input_parser = tree.getroot()
-
-        return self.input_parser
-
-    def xml_output_parser(self) -> ET.Element:
-        """ Returns the XML parser for the output file. """
-        if isinstance(self.destination, str):
-            self.destination = Path(self.destination)
-
-        if not self.exists():
-            self.init()
-
-        try:
-            self.output_tree = ET.parse(self.destination.absolute())
-        except ET.ParseError:
-            self.init()
-            self.output_tree = ET.parse(self.destination.absolute())
-
-        self.output_parser = self.output_tree.getroot()
-        return self.output_parser
 
     @staticmethod
     def plugins(parser) -> list:
@@ -139,15 +111,12 @@ class Merger:
 
     def merge(self):
         """ Make the merge. """
-        if not self.exists():
-            raise FileDoesNotExist
-
         output_plugins = self.plugins(self.output_parser)
         input_plugins = self.plugins(self.input_parser)
 
         diff = self.diff_plugins(input_plugins, output_plugins)
 
-        print(f"Updating source {self.destination.absolute()}")
+        print(f"Updating source {self.destination_uri.absolute()}")
         print(f"with {self.input_uri}")
 
         if len(diff) == 0:
@@ -167,7 +136,7 @@ class Merger:
 
         if sys.version_info >= (3, 9):
             ET.indent(self.output_tree, space="\t", level=0)
-        self.output_tree.write(self.destination.absolute(), encoding="utf-8")
+        self.output_tree.write(self.destination_uri.absolute(), encoding="utf-8")
 
-        with open(self.destination, "a", encoding='utf8') as f:
+        with open(self.destination_uri, "a", encoding='utf8') as f:
             f.write("\n")
