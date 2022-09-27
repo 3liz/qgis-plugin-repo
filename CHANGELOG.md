@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.4.3 - 2022-09-27
+
+* Fix regression from the latest release
+
 ## 0.4.2 - 2022-09-26
 
 * Fix regression from the latest release
