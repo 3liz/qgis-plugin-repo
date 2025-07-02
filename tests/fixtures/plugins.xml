@@ -1,56 +1,110 @@
 <plugins>
-	<pyqgis_plugin name="PgMetadata" version="0.5.0">
-		<description>Metadata manager stored in PostgreSQL</description>
-		<version>0.5.0</version>
-		<qgis_minimum_version>3.10</qgis_minimum_version>
-		<homepage>https://docs.3liz.org/qgis-pgmetadata-plugin/</homepage>
-		<file_name>pg_metadata.0.5.0.zip</file_name>
-		<icon>resources/icons/icon.png</icon>
-		<author_name>3Liz</author_name>
-		<download_url>https://github.com/3liz/qgis-pgmetadata-plugin/releases/download/0.5.0/pg_metadata.0.5.0.zip</download_url>
-		<uploaded_by>3Liz</uploaded_by>
-		<create_date>2021-02-19</create_date>
-		<update_date>2021-02-19</update_date>
-		<experimental>False</experimental>
-		<deprecated>False</deprecated>
-		<tracker>https://github.com/3liz/qgis-pgmetadata-plugin/issues</tracker>
-		<repository>https://github.com/3liz/qgis-pgmetadata-plugin</repository>
-		<tags>metadata,postgresql,qgis,metadonnees</tags>
-	</pyqgis_plugin>
-	<pyqgis_plugin name="PgMetadata" version="0.4.0">
-		<description>Metadata manager stored in PostgreSQL</description>
-		<version>0.4.0</version>
-		<qgis_minimum_version>3.10</qgis_minimum_version>
-		<homepage>https://docs.3liz.org/qgis-pgmetadata-plugin/</homepage>
-		<file_name>pg_metadata.0.4.0.zip</file_name>
-		<icon>resources/icons/icon.png</icon>
-		<author_name>3Liz</author_name>
-		<download_url>https://github.com/3liz/qgis-pgmetadata-plugin/releases/download/0.4.0/pg_metadata.0.5.0.zip</download_url>
-		<uploaded_by>3Liz</uploaded_by>
-		<create_date>2021-02-19</create_date>
-		<update_date>2021-02-19</update_date>
-		<experimental>True</experimental>
-		<deprecated>False</deprecated>
-		<tracker>https://github.com/3liz/qgis-pgmetadata-plugin/issues</tracker>
-		<repository>https://github.com/3liz/qgis-pgmetadata-plugin</repository>
-		<tags>metadata,postgresql,qgis,metadonnees</tags>
-	</pyqgis_plugin>
-	<pyqgis_plugin name="atlasprint" version="v3.2.2">
-		<description>Add atlas capabilities for getPrint request in WMS for QGIS Server</description>
-		<version>v3.2.2</version>
-		<qgis_minimum_version>3.10</qgis_minimum_version>
-		<homepage>https://github.com/3liz/qgis-atlasprint</homepage>
-		<file_name>atlasprint.v3.2.2.zip</file_name>
-		<icon>icon.png</icon>
-		<author_name>3Liz</author_name>
-		<download_url>https://github.com/3liz/qgis-atlasprint/releases/download/v3.2.2/atlasprint.v3.2.2.zip</download_url>
-		<uploaded_by>Gustry</uploaded_by>
-		<create_date>2021-04-29</create_date>
-		<update_date>2021-04-29</update_date>
-		<experimental>False</experimental>
-		<deprecated>False</deprecated>
-		<tracker>https://github.com/3liz/qgis-atlasprint/issues</tracker>
-		<repository>https://github.com/3liz/qgis-atlasprint</repository>
-		<tags>server,print,atlas</tags>
-	</pyqgis_plugin>
+<pyqgis_plugin name="wfsOutputExtension" version="1.7.1-alpha">
+        <description>Adds additional output formats to WFS GetFeature request on QGIS Server such as Geopackage, ODS, CSV etc.</description>
+        <version>1.7.1-alpha</version>
+        <qgis_minimum_version>3.0</qgis_minimum_version>
+        <homepage>https://github.com/3liz/qgis-wfsOutputExtension</homepage>
+        <file_name>wfsOutputExtension.1.7.1-alpha.zip</file_name>
+        <icon>icon.png</icon>
+        <author_name>3Liz</author_name>
+        <download_url>https://packages.3liz.org/pub/wfsOutputExtension-qgis-plugin/unstable/wfsOutputExtension.1.7.1-alpha.zip</download_url>
+        <uploaded_by>3Liz</uploaded_by>
+        <create_date>2022-09-27</create_date>
+        <update_date>2022-09-27</update_date>
+        <experimental>False</experimental>
+        <deprecated>False</deprecated>
+        <tracker>https://github.com/3liz/qgis-wfsOutputExtension/issues</tracker>
+        <repository>https://github.com/3liz/qgis-wfsOutputExtension</repository>
+        <tags>server,format,wfs,ogc,lizmap,web,extension</tags>
+    </pyqgis_plugin>
+<pyqgis_plugin name="atlasprint" version="3.3.2-alpha">
+        <description>Add atlas capabilities for getPrint request in WMS for QGIS Server</description>
+        <version>3.3.2-alpha</version>
+        <qgis_minimum_version>3.10</qgis_minimum_version>
+        <homepage>https://github.com/3liz/qgis-atlasprint</homepage>
+        <file_name>atlasprint.3.3.2-alpha.zip</file_name>
+        <icon>icon.png</icon>
+        <author_name>3Liz</author_name>
+        <download_url>https://packages.3liz.org/pub/atlasPrint-qgis-plugin/unstable/atlasprint.3.3.2-alpha.zip</download_url>
+        <uploaded_by>3Liz</uploaded_by>
+        <create_date>2022-09-27</create_date>
+        <update_date>2022-09-27</update_date>
+        <experimental>False</experimental>
+        <deprecated>False</deprecated>
+        <tracker>https://github.com/3liz/qgis-atlasprint/issues</tracker>
+        <repository>https://github.com/3liz/qgis-atlasprint</repository>
+        <tags>server,print,atlas</tags>
+    </pyqgis_plugin>
+<pyqgis_plugin name="Lizmap server" version="1.1.2-alpha">
+        <description>Only used on a QGIS server. Publish and share your QGIS maps on the Web via Lizmap Web Client, by 3liz.com</description>
+        <version>1.1.2-alpha</version>
+        <qgis_minimum_version>3.10</qgis_minimum_version>
+        <homepage>https://docs.lizmap.com</homepage>
+        <file_name>lizmap_server.1.1.2-alpha.zip</file_name>
+        <icon>resources/icons/icon.png</icon>
+        <author_name>3Liz</author_name>
+        <download_url>https://packages.3liz.org/pub/lizmap-server-qgis-plugin/unstable/lizmap_server.1.1.2-alpha.zip</download_url>
+        <uploaded_by>3Liz</uploaded_by>
+        <create_date>2022-09-27</create_date>
+        <update_date>2022-09-27</update_date>
+        <experimental>False</experimental>
+        <deprecated>False</deprecated>
+        <tracker>https://github.com/3liz/qgis-lizmap-server-plugin/issues</tracker>
+        <repository>https://github.com/3liz/qgis-lizmap-server-plugin</repository>
+        <tags>online,server,web,webgis,webservice,webmapping,mobile,publication,wms,wfs,wps,internet,cloud</tags>
+    </pyqgis_plugin>
+<pyqgis_plugin name="wfsOutputExtension" version="1.7.1-alpha">
+        <description>Adds additional output formats to WFS GetFeature request on QGIS Server such as Geopackage, ODS, CSV etc.</description>
+        <version>1.7.1-alpha</version>
+        <qgis_minimum_version>3.0</qgis_minimum_version>
+        <homepage>https://github.com/3liz/qgis-wfsOutputExtension</homepage>
+        <file_name>wfsOutputExtension.1.7.1-alpha.zip</file_name>
+        <icon>icon.png</icon>
+        <author_name>3Liz</author_name>
+        <download_url>https://packages.3liz.org/pub/wfsOutputExtension-qgis-plugin/unstable/wfsOutputExtension.1.7.1-alpha.zip</download_url>
+        <uploaded_by>3Liz</uploaded_by>
+        <create_date>2022-09-28</create_date>
+        <update_date>2022-09-28</update_date>
+        <experimental>True</experimental>
+        <deprecated>False</deprecated>
+        <tracker>https://github.com/3liz/qgis-wfsOutputExtension/issues</tracker>
+        <repository>https://github.com/3liz/qgis-wfsOutputExtension</repository>
+        <tags>server,format,wfs,ogc,lizmap,web,extension</tags>
+    </pyqgis_plugin>
+<pyqgis_plugin name="atlasprint" version="3.3.2-alpha">
+        <description>Add atlas capabilities for getPrint request in WMS for QGIS Server</description>
+        <version>3.3.2-alpha</version>
+        <qgis_minimum_version>3.10</qgis_minimum_version>
+        <homepage>https://github.com/3liz/qgis-atlasprint</homepage>
+        <file_name>atlasprint.3.3.2-alpha.zip</file_name>
+        <icon>icon.png</icon>
+        <author_name>3Liz</author_name>
+        <download_url>https://packages.3liz.org/pub/atlasprint-qgis-plugin/unstable/atlasprint.3.3.2-alpha.zip</download_url>
+        <uploaded_by>3Liz</uploaded_by>
+        <create_date>2022-09-28</create_date>
+        <update_date>2022-09-28</update_date>
+        <experimental>True</experimental>
+        <deprecated>False</deprecated>
+        <tracker>https://github.com/3liz/qgis-atlasprint/issues</tracker>
+        <repository>https://github.com/3liz/qgis-atlasprint</repository>
+        <tags>server,print,atlas</tags>
+    </pyqgis_plugin>
+<pyqgis_plugin name="cadastre" version="1.16.1-alpha">
+        <description>This plugins helps users to use French land registry data, called Cadastre, in QGIS. It is only useful in</description>
+        <version>1.16.1-alpha</version>
+        <qgis_minimum_version>3.4</qgis_minimum_version>
+        <homepage>https://docs.3liz.org/QgisCadastrePlugin/</homepage>
+        <file_name>cadastre.1.16.1-alpha.zip</file_name>
+        <icon>icon.png</icon>
+        <author_name>3Liz</author_name>
+        <download_url>https://packages.3liz.org/pub/cadastre-qgis-plugin/unstable/cadastre.1.16.1-alpha.zip</download_url>
+        <uploaded_by>3Liz</uploaded_by>
+        <create_date>2022-09-28</create_date>
+        <update_date>2022-09-28</update_date>
+        <experimental>True</experimental>
+        <deprecated>False</deprecated>
+        <tracker>https://github.com/3liz/QgisCadastrePlugin/issues</tracker>
+        <repository>https://github.com/3liz/QgisCadastrePlugin</repository>
+        <tags>cadastre, france, majic, edigeo, import</tags>
+    </pyqgis_plugin>
 </plugins>
